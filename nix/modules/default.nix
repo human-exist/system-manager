@@ -12,6 +12,7 @@
     ./etc.nix
     ./systemd.nix
     ./tmpfiles.nix
+    ./selinux.nix
     ./upstream/nixpkgs
   ];
 

@@ -2,6 +2,7 @@ pub mod activate;
 pub mod deactivate;
 pub mod register;
 mod systemd;
+mod compatibility;
 pub mod unit_info;
 
 use anyhow::Result;

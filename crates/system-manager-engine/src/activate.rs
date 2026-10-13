@@ -146,6 +146,8 @@ pub fn activate(store_path: &StorePath, ephemeral: bool) -> Result<()> {
 
     match etc_files::activate(store_path, old_state.file_tree, ephemeral) {
         Ok(etc_tree) => {
+            crate::compatibility::selinux::relabel_systemd_files(store_path)?;
+
             log::info!("Restarting sysinit-reactivation.target...");
             services::restart_sysinit_reactivation_target()?;
 
