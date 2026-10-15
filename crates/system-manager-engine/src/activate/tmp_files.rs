@@ -1,6 +1,7 @@
 use crate::activate;
 
 use super::ActivationResult;
+use anyhow::Context;
 use std::collections::HashSet;
 use std::path::PathBuf;
 use std::process;
@@ -29,7 +30,16 @@ pub fn activate(etc_tree: &HashSet<PathBuf>) -> TmpFilesActivationResult {
         .stdout(process::Stdio::inherit())
         .stderr(process::Stdio::inherit())
         .output()
-        .expect("Error forking process");
+        .with_context(|| {
+            format!(
+                "failed to spawn systemd-tmpfiles; PATH={:?}",
+                std::env::var_os("PATH")
+            )
+        })
+        .map_err(|e| activate::ActivationError::WithPartialResult {
+            result: (),
+            source: e,
+        })?; // temporary debugging output
 
     output.status.success().then_some(()).ok_or_else(|| {
         activate::ActivationError::WithPartialResult {
