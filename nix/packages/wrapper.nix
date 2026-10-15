@@ -2,6 +2,7 @@
   lib,
 
   nix,
+  systemd,
   runCommand,
   makeBinaryWrapper,
 
@@ -25,9 +26,9 @@ runCommand "system-manager"
       $out/bin/system-manager \
       --prefix PATH : ${lib.makeBinPath [ nix ]}
 
-    # Wrap the engine binary with nix in PATH (needed for register command)
+    # Wrap the engine binary with nix (needed for register command) & systemd (systemd-tmpfiles for activation) in PATH
     makeWrapper \
       ${system-manager-unwrapped}/bin/system-manager-engine \
       $out/bin/system-manager-engine \
-      --prefix PATH : ${lib.makeBinPath [ nix ]}
+      --prefix PATH : ${lib.makeBinPath [ nix systemd ]}
   ''
