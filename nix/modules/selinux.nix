@@ -96,14 +96,21 @@ in
 
       export PATH="${
         lib.makeBinPath [
+          pkgs.coreutils
           pkgs.policycoreutils
           selinuxPython
         ]
       }"
 
+      # CIL carries no module name, so semodule takes it from the filename and
+      # a store path always starts with a hash, which is not a valid name.
+      moduleDir="$(mktemp -d)"
+      trap 'rm -rf "$moduleDir"' EXIT
+      cp ${nixStorePolicy} "$moduleDir/nix_store.cil"
+
       # Change the selinux context of the store
       # Strictly ordered; each step is a precondition for the next.
-      semodule -i ${nixStorePolicy}
+      semodule -i "$moduleDir/nix_store.cil"
       semanage fcontext -a -t ${cfg.storeContext} '${cfg.storePath}(/.*)?' \
         || semanage fcontext -m -t ${cfg.storeContext} '${cfg.storePath}(/.*)?'
       restorecon ${lib.optionalString cfg.verbose "-v"} -R ${cfg.storePath}
