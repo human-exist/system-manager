@@ -75,6 +75,26 @@ let
       class = "filesystem";
       permissions = [ "associate" ];
     }
+    {
+      domain = "domain";
+      class = "dir";
+      permissions = [
+        "getattr"
+        "open"
+        "read"
+        "search"
+      ];
+    }
+    {
+      domain = "domain";
+      class = "file";
+      permissions = [
+        "getattr"
+        "map"
+        "open"
+        "read"
+      ];
+    }
   ];
 
   nixStorePolicy = pkgs.writeText "nix-store.cil" ''
