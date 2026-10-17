@@ -212,6 +212,7 @@ impl ServiceManager {
                 .map(|t| start_time.elapsed() > t)
                 .unwrap_or_default()
             {
+                log::warn!("Timed out waiting for systemd jobs; still pending: {waiting_for:?}");
                 return Ok(false);
             }
             let mut job_names = job_monitor.job_names.lock().unwrap();
