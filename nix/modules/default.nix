@@ -216,6 +216,7 @@
             "nixos"
             "ubuntu"
             "debian"
+            "fedora"
           ];
         in
         {
