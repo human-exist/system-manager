@@ -174,11 +174,10 @@
             ${config.environment.extraInit}
           '';
 
+          # This file is a `.conf` file which is not bash so bash expression do not work here, ex: $VAR, ''${VAR}.
+          # Need nix substitution or an alternative which must be reachable at build time for nix to write here dynamically.
           "environment.d/10-system-manager.conf".text = ''
             ${lib.concatLines (lib.mapAttrsToList (k: v: ''${k}="${v}"'') config.environment.variables)}
-            PATH=/etc/profiles/per-user/''${USER}/bin:${pathDir}/bin:''${PATH}
-            XDG_DATA_DIRS=/etc/profiles/per-user/''${USER}/share:${pathDir}/share:''${XDG_DATA_DIRS:-/usr/local/share:/usr/share}
-            NIX_USER_PROFILE_DIR=/nix/var/nix/profiles/per-user/''${USER}
             NIX_PROFILES="${nixProfiles}"
           '';
 
